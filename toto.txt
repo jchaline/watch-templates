@@ -1,0 +1,6 @@
+ - le service qui gère les l'apparition d'évènement doit être injecté par spring et remplacé si un autre est detecté (service par défaut, nouveau avec package différent ?)
+ - règle de transformation :
+ 	1) fichier skeleton_.html => rebuild de tout le monde
+ 	2) fichier p_*_.html => page cible construite à partir de skeleton_.html
+ 	3) fichier f_*_* => fichier cible standard (ex: f_shelter_.js => shelter.js)
+ 
