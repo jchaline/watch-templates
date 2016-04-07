@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html lang="en" data-ng-app="worldModule">
+<head>
+	<title>Shelter</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.css">
+	<link rel="stylesheet" href="css/world-map.css">
+			<link rel="stylesheet" href="css/world-map.css">
+	
+	<script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/lodash.core.min.js"></script>
+	<script type="text/javascript" src="js/shelter/shelter.js"></script>
+		<script type="text/javascript" src="js/shelter/http-service.js"></script>
+</head>
+
+	<body role="document" >
+		<nav id="navbar" class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="index.html">Shelter view</a></li>
+						<li><a href="world.html">World map</a></li>
+						<li><a href="test.html">test</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		
+		
+		<div class="container" role="main">
+			
+		<div data-ng-controller="shelterController" class="row">
+		    <div class="col-xs-12 col-sm-12 col-md-12">
+				<h3>
+					Shelter view
+					<span class="pull-right">
+			    		<button class="btn btn-xs btn-primary" data-ng-click="updateShelter()">
+							<i class="glyphicon glyphicon-refresh"></i>
+			    			<span class="hidden-xs">refresh Shelter</span>
+			    		</button>
+			    		<button class="btn btn-xs btn-primary" data-ng-click="updateDwellers()">
+							<i class="glyphicon glyphicon-refresh"></i>
+			    			<span class="hidden-xs">refresh dwellers</span>
+			    		</button>
+			    	</span>
+				</h3>
+				<div class="bg-silver" data-ng-view="shelterView" id="shelter">
+					<span class="text-center">{{money | formatResources}} $, {{food | formatResources}} food, {{water | formatResources}} water. Power : {{ power }} / {{ powerRequired }}</span>
+					<div data-ng-repeat="floor in floors | orderBy: number">
+						<span data-ng-repeat="room in floor.rooms | orderBy:roomOrder">
+							<span id="room{{room.id}}" class="bg-{{ room.roomType.name }}" title="{{ room.roomType.name }}" 
+								data-ng-click="actionRoom(floor, room)" drop="{{room.id}}">
+								[{{ room.roomType.name | firstLetter }}, {{ room.size }} {{ room.cells }}. ({{ room.roomType.special }})]
+							</span>
+						</span>
+					</div>
+					<hr>
+					<div >
+						<span data-ng-show="showDisplayRoom" class="ng-hide">
+							Room selected : {{ displayedRoom }}
+							<button class="btn btn-xs btn-primary" data-ng-click="showDisplayRoom = false">
+								<i class="glyphicon glyphicon-ban-circle"></i>
+								<span class="hidden-xs">Cancel</span>
+							</button>
+							<button class="btn btn-xs btn-success" data-ng-click="upgradeRoom(displayedRoom)">
+								<i class="glyphicon glyphicon-upload"></i>
+								<span class="hidden-xs">Upgrade</span>
+							</button>
+							<button class="btn btn-xs btn-danger" data-ng-click="sellRoom(displayedRoom)">
+								<i class="glyphicon glyphicon-trash"></i>
+								<span class="hidden-xs">Sell</span>
+							</button>
+						</span>
+						<span data-ng-show="showConstructRoom" class="ng-hide">
+							Construct : 
+							<span data-ng-repeat="type in roomtype | orderBy:id">
+								<span class="bg-{{ type.name }}" data-ng-click="construct(constructFloor, constructCell, type.name)">
+									[{{type.name}}, {{type.size}}, {{type.special}}]: {{type.cost}}$
+								</span>
+							</span>
+							<button class="btn btn-xs btn-primary" data-ng-click="showConstructRoom = false">
+								<i class="glyphicon glyphicon-ban-circle"></i>
+								<span class="hidden-xs">Cancel</span>
+							</button>
+						</span>
+					</div>
+					<hr>
+					<div>
+						<table data-datatable="ng" data-ng-if="dwellers" id="dwellerTable" class="table table-striped table-hover">
+							<thead>
+								<tr>
+									<th>Name</th><th>Firstname</th><th>Room</th><th>Level</th><th>Male</th>
+									<th data-ng-repeat="td in ['S','P','E','C','I','A','L']">{{td}}</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr data-ng-repeat="dweller in dwellers">
+									<td>
+										<span	id="dweller{{dweller.id}}" data-dweller="{{dweller.id}}" 
+												class="glyphicon glyphicon-user" drag="{{dweller.id}}">
+										</span>
+										 {{ dweller.name }}
+									</td>
+									<td>{{ dweller.firstname }}</td>
+									<td>{{ dweller.room.roomType.name }}</td>
+									<td>{{ dweller.level }}</td>
+									<td><span data-ng-if="dweller.male">&#9794;</span><span ng-if="!dweller.male">&#9792;</span></td>
+									<td data-ng-repeat="td in ['S','P','E','C','I','A','L']">{{ dweller.special.values[td] }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</body>
+</html>
